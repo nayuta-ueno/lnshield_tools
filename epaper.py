@@ -77,7 +77,7 @@ def _disp_title(epd, image, title_str):
 
 # arg none: clear
 # arg[1]: PNG filename
-# arg[2]: title
+# arg[2..]: title
 def main():
     print('start')
     clear_frame = False
