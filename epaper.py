@@ -83,7 +83,7 @@ def main():
     clear_frame = False
     png_file = ''
     title_str = ''
-    if len(sys.argv) != 3:
+    if len(sys.argv) < 3:
         clear_frame = True
     else:
         png_file = sys.argv[1]
