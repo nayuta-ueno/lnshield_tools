@@ -63,11 +63,13 @@ before=0
 while :
 do
   count=`bin/bitcoin-cli getblockcount | sed -e 's/\r//g' -e 's/\n//g'`
-  if [ $before != $count ]; then
-    python3 $HOME/lnshield/lnshield_tools/epaper.py "" $count
+  if [ "$before" != "$count" ]; then
+    dt=`date +'%Y/%m/%d'`
+    tm=`date +'%T'`
+    python3 $HOME/lnshield/lnshield_tools/epaper.py "" "$count" "$dt" "$tm"
     before=$count
   fi
-  sleep 300
+  sleep 60
 done
 ```
 
@@ -77,11 +79,37 @@ done
 bash watch_block.sh
 ```
 
+### for background
+
+1. copy "~/umbrel/bin/bitcoin-cli" to "~/umbrel/bin/bitcoin-cli2"
+2. edit bitcoin-cli2(add `-T` after `exec`)
+
+```bash
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+UMBREL_ROOT="$(readlink -f $(dirname "${BASH_SOURCE[0]}")/..)"
+
+result=$(docker-compose \
+  --file "${UMBREL_ROOT}/docker-compose.yml" \
+  --env-file "${UMBREL_ROOT}/.env" \
+  exec -T bitcoin bitcoin-cli "$@")
+
+# We need to echo with quotes to preserve output formatting
+echo "$result"
+```
+
+3. use bitcoin-cli2 in watch_block.sh
+
+4. run script file
+
+```bash
+bash watch_block.sh &> /dev/null < /dev/null&
+```
+
 ## Base
 
 * https://www.waveshare.com/wiki/File:2.7inch-e-paper-hat-code.7z
   version: 07:26, 28 November 2018
-
-* https://github.com/elad661/rpi_epd2in7
-  commit: 8fd09f4a6a2c8ba26bfd216255c95e6abdad1333
 
