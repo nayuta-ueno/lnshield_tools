@@ -1,0 +1,11 @@
+import RPi.GPIO as GPIO
+
+LED1 = 15
+LED2 = 13
+
+LED_ON = GPIO.LOW
+LED_OFF = GPIO.HIGH
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(LED1, GPIO.OUT, initial=LED_OFF)
+GPIO.setup(LED2, GPIO.OUT, initial=LED_OFF)
