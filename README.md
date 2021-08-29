@@ -81,7 +81,7 @@ bash watch_block.sh
 
 ### for background
 
-1. copy "~/umbrel/bin/bitcoin-cli" to "~/umbrel/bin/bitcoin-cli2"
+1. copy "$HOME/umbrel/bin/bitcoin-cli" to "$HOME/umbrel/bin/bitcoin-cli2"
 2. edit bitcoin-cli2(add `-T` after `exec`)
 
 ```bash
