@@ -69,7 +69,7 @@ do
     python3 $HOME/lnshield/lnshield_tools/epaper.py "" "$count" "$dt" "$tm"
     before=$count
   fi
-  sleep 60
+  sleep 180
 done
 ```
 
@@ -108,8 +108,9 @@ echo "$result"
 bash watch_block.sh &> /dev/null < /dev/null&
 ```
 
-## Base
+## References
 
+* [2.7inch ePaper HAT wiki](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT)
 * https://www.waveshare.com/wiki/File:2.7inch-e-paper-hat-code.7z
   version: 07:26, 28 November 2018
 
