@@ -56,7 +56,7 @@ cd ~/umbrel
 vi watch_block.sh
 ```
 
-```text
+```bash
 #!/bin/bash
 
 before=0
@@ -66,7 +66,8 @@ do
   if [ "$before" != "$count" ]; then
     dt=`date +'%Y/%m/%d'`
     tm=`date +'%T'`
-    python3 $HOME/lnshield/lnshield_tools/epaper.py "" "$count" "$dt" "$tm"
+    tmp_cpu=`vcgencmd measure_temp`
+    python3 $HOME/lnshield/lnshield_tools/epaper.py "" "$count" "$dt" "$tm" "$tmp_cpu"
     before=$count
   fi
   sleep 180
@@ -101,6 +102,24 @@ echo "$result"
 ```
 
 3. use bitcoin-cli2 in watch_block.sh
+
+```bash
+#!/bin/bash
+
+before=0
+while :
+do
+  count=`bin/bitcoin-cli2 getblockcount | sed -e 's/\r//g' -e 's/\n//g'`
+  if [ "$before" != "$count" ]; then
+    dt=`date +'%Y/%m/%d'`
+    tm=`date +'%T'`
+    tmp_cpu=`vcgencmd measure_temp`
+    python3 $HOME/lnshield/lnshield_tools/epaper.py "" "$count" "$dt" "$tm" "$tmp_cpu"
+    before=$count
+  fi
+  sleep 180
+done
+```
 
 4. run script file
 
