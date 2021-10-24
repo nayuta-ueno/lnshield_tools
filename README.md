@@ -42,19 +42,16 @@ git clone https://github.com/nayuta-ueno/lnshield_tools.git
 cd lnshield_tools
 python3 install -r requirements.txt
 python3 gpio_init.py
+cd
 ```
 
-3. goto Umbrel directory
+3. copy "$HOME/umbrel/bin/bitcoin-cli" to "$HOME/umbrel/bin/bitcoin-cli2" and 
 
 ```bash
-cd ~/umbrel
+cat $HOME/umbrel/bin/bitcoin-cli | sed -e 's/exec/exec -T/' > $HOME/umbrel/bin/bitcoin-cli2 ; chmod u+x $HOME/umbrel/bin/bitcoin-cli2
 ```
 
-4. create script file
-
-```bash
-vi watch_block.sh
-```
+4. create $HOME/watch_block.sh and edit
 
 ```bash
 #!/bin/bash
@@ -62,7 +59,7 @@ vi watch_block.sh
 before=0
 while :
 do
-  count=`bin/bitcoin-cli getblockcount | sed -e 's/\r//g' -e 's/\n//g'`
+  count=`$HOME/umbrel/bin/bitcoin-cli2 getblockcount | sed -e 's/\r//g' -e 's/\n//g'`
   if [ "$before" != "$count" ]; then
     dt=`date +'%Y/%m/%d'`
     tm=`date +'%T'`
@@ -74,62 +71,16 @@ do
 done
 ```
 
-5. run script file
+5. chmod
 
 ```bash
-bash watch_block.sh
+chmod u+x watch_block.sh
 ```
 
-### for background
-
-1. copy "$HOME/umbrel/bin/bitcoin-cli" to "$HOME/umbrel/bin/bitcoin-cli2"
+6. run script file
 
 ```bash
-cp $HOME/umbrel/bin/bitcoin-cli $HOME/umbrel/bin/bitcoin-cli2
-```
-
-2. edit bitcoin-cli2(add `-T` after `exec`)
-
-```bash
-#!/usr/bin/env bash
-
-set -euo pipefail
-
-UMBREL_ROOT="$(readlink -f $(dirname "${BASH_SOURCE[0]}")/..)"
-
-result=$(docker-compose \
-  --file "${UMBREL_ROOT}/docker-compose.yml" \
-  --env-file "${UMBREL_ROOT}/.env" \
-  exec -T bitcoin bitcoin-cli "$@")
-
-# We need to echo with quotes to preserve output formatting
-echo "$result"
-```
-
-3. use bitcoin-cli2 in watch_block.sh
-
-```bash
-#!/bin/bash
-
-before=0
-while :
-do
-  count=`bin/bitcoin-cli2 getblockcount | sed -e 's/\r//g' -e 's/\n//g'`
-  if [ "$before" != "$count" ]; then
-    dt=`date +'%Y/%m/%d'`
-    tm=`date +'%T'`
-    tmp_cpu=`vcgencmd measure_temp`
-    python3 $HOME/lnshield/lnshield_tools/epaper.py "" "$count" "$dt" "$tm" "$tmp_cpu"
-    before=$count
-  fi
-  sleep 180
-done
-```
-
-4. run script file
-
-```bash
-bash watch_block.sh &> /dev/null < /dev/null&
+nohup ./watch_block.sh &> /dev/null < /dev/null&
 ```
 
 ## References
